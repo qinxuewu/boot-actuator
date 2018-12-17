@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pflm.modules.job.dao.ScheduleJobLogMapper">
+    <select id="queryList" resultType="com.pflm.modules.job.entity.ScheduleJobLogEntity">
+        select * from schedule_job_log
+        <where>
+            <if test="jobId != null and jobId.trim() != ''">
+                and job_id = #{jobId}
+            </if>
+        </where>
+        order by log_id desc
+        <if test="offset != null and limit != null ">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(1) from schedule_job_log
+        <where>
+            <if test="jobId != null and jobId.trim() != ''">
+                and job_id = #{jobId}
+            </if>
+        </where>
+    </select>
+
+  
+
+</mapper>

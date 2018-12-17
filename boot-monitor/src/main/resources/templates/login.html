@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>管理员登录-JVM性能远程应用监控工具</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+	  <link rel="stylesheet" href="/lib/layui/css/weadmin.css"/>
+
+</head>
+<body class="login-bg">
+    
+    <div class="login">
+        <div class="message">JVM性能远程应用监控工具</div>
+        <div id="darkbannerwrap"></div>
+            <input name="username" id="username" placeholder="用户名"  type="text"  class="layui-input" >
+            <hr class="hr15">
+            <input name="password" id="password" placeholder="密码"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input class="loginin" value="登录" lay-submit lay-filter="login" style="width:100%;" type="button" onclick="login(this)">
+  
+    </div>
+
+
+<script src="/lib/layui/layui.all.js"></script>
+<script src="/lib/jquery.min.js"></script>
+ <script type="text/javascript">
+        function login(){
+        	var username=$("#username").val();
+			var password=$("#password").val();
+			if($.trim(username)==""){
+				layer.msg("请输入用户名");
+				return false;
+			}
+			if($.trim(password)==""){
+				layer.msg("请输入登录密码");
+				return false;
+			}
+        	 $.ajax({
+		            url:"/checkLogin",
+		            dataType: "json",
+		            type: "post",
+		            data: {"uname":password,"pwd":password},
+		            success: function (data) {
+		                if (data.code == 0) {
+		                	 location.href="/index"
+		                }else{
+		                	layer.msg(data.msg);
+		                }
+		            }
+		        })
+        }
+</script>  
+</body>
+</html>

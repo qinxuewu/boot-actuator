@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-Equiv="Expires" Content="0" />
+    <title>boot-monitor  JVM远程应用监控工具</title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
+</head>
+<style>
+    .layui-layout-admin .layui-body {
+        bottom: 0px;
+    }
+</style>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">boot-monitor监控</div>
+         <!-- 头部区域（可配合layui已有的水平导航） -->
+	    <ul class="layui-nav layui-layout-left">
+	      <li class="layui-nav-item"><a href="/index">控制台</a></li>
+	      <li class="layui-nav-item">
+	        <a href="javascript:;">其它系统</a>
+	        <dl class="layui-nav-child">
+	          <dd><a href="https://gitee.com/qinxuewu/mongo-web-select" target="myiframe">Mongodb 图形化web管理工具</a></dd>
+	          <dd><a href="https://gitee.com/qinxuewu/wechat-parent" target="myiframe">SpringCloud微服务化脚手架</a></dd>
+	          <dd><a href="https://gitee.com/qinxuewu/basic_induction_of_java/wikis" target="myiframe">Java核心知识整理</a></dd>
+	        </dl>
+	      </li>
+	    </ul>
+	    <ul class="layui-nav layui-layout-right">
+	      <li class="layui-nav-item">
+	        <a href="javascript:;">
+	          <img src="https://gitee.com/uploads/71/1478371_qinxuewu.png?1516348738" class="layui-nav-img">
+	 			<span th:text="${username}"></span>
+	        </a>
+	      </li>
+      <li class="layui-nav-item"><a href="/logiout">退了</a></li>
+    </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:void(0)"><i class="layui-icon" style="font-size: 20px;">&#xe614;</i>&nbsp;应用列表</a>
+                    <dl class="layui-nav-child" th:each="list:${list}">
+                        <dd>
+                            <a  class="monitor" href="javascript:void(0)">
+                             <i class="layui-icon layui-icon-chart" style="font-size: 14px; margin-right: 5px;"></i>
+                             <span th:text="${list.name}"></span>
+                            </a>
+                        </dd>
+                    </dl>
+                </li>    
+                <li class="layui-nav-item">
+			          <a href="javascript:;"><i class="layui-icon" style="font-size: 20px;">&#xe629;</i>&nbsp;系统管理</a>
+			          <dl class="layui-nav-child">
+			            <dd><a href="/userList" target="myiframe"><i class="layui-icon layui-icon-group" style="font-size: 12px; margin-right: 5px;"></i>用户列表</a></dd>
+			             <dd><a href="/schedule/index" target="myiframe"><i class="layui-icon layui-icon-date" style="font-size: 14px; margin-right: 5px;"></i>定时任务</a></dd>
+			             <dd><a href="https://gitee.com/qinxuewu" target="myiframe"><i class="layui-icon layui-icon-link" style="font-size: 12px; margin-right: 5px;"></i>码云</a></dd>
+			          </dl>
+       		    </li>         
+            </ul>
+        </div>
+    </div>
+  <!-- 内容主体区域 -->
+    <div class="layui-body" style="top: 0px;overflow-y: hidden">      
+        <iframe id="iframe" height="100%" width="100%" src="/main" frameborder="no" allowtransparency="yes" name="myiframe"></iframe>
+    </div>
+</div>
+<script src="/lib/layui/layui.all.js"></script>
+<script src="/lib/jquery.min.js"></script>
+<script type="text/javascript">
+    function index() {
+        $("#iframe").attr("src","/main");
+    }
+    function gitee() {
+        window.open("//gitee.com/qinxuewu");
+    }
+    $(function(){
+    	$(".monitor").on("click",function(){
+    		var name=$(this).find("span").text();
+    		 $("#iframe").attr("src","/monitor?pid="+name);
+    	})
+    })
+      
+</script>
+</body>
+</html>

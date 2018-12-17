@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-Equiv="Expires" Content="0" />
+    <title>监控列表</title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
+</head>
+<style>
+    body {
+        background-color: #f2f2f2;
+    }
+	.grid-demo{
+			min-height: 100px;
+		    background: #FFF;
+		    padding: 10px 10px;
+		    border-radius: 2px;
+		    box-shadow: 5px 5px 1px #b2b2b2;
+	}  
+</style>
+<body>
+<div style="padding: 20px; background-color: #F2F2F2;margin-top: 50px;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <i class="layui-icon">&#xe68e;</i>
+                    <span>首页 / 应用列表</span>
+                </div>
+                <div class="layui-card-body">               
+						  <button class="layui-btn layui-btn-sm" id="add"><i class="layui-icon">&#xe654;</i>添加应用 </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- 栅格 -->
+   <div class="layui-row layui-col-space5">
+	    <div class="layui-col-md4" th:each="list:${list}">
+	      <div class="grid-demo">
+	        	<div class="layui-card-header">
+	        	<i class="layui-icon layui-icon-website" style="font-size: 26px;color: #1e9fff;margin-right: 20px;"></i>应用名称：<span th:text="${list.name}">>web1</span>
+		        	<div class="layui-btn-group" style="float: right;">
+							  <button class="layui-btn layui-btn-sm monitor"   title="详情" th:attr="data-name=${list.name}">
+    							<i class="layui-icon">&#xe857;</i>
+ 							  </button>		
+ 							  <button class="layui-btn layui-btn-danger layui-btn-sm del" title="删除"   th:attr="data-name=${list.name}">
+							    <i class="layui-icon">&#xe640;</i>
+							  </button>		
+						</div>
+		        	</div>
+		        <div class="layui-card-body">
+			        <p>当前服务器内存监控: 单位(MB)</p>
+			        <p>total：<span th:text="${list.total}">980</span>MB</p>
+			        <p>used：<span th:text="${list.used}">980</span>MB</p> 
+			        <p>free：<span th:text="${list.free}">980</span>MB</p> 
+		        </div>
+	      </div>
+	    </div>	  
+  </div>
+ 
+ <!-- 弹出层 --> 
+  <div class="layelAdd" style="display: none;">
+	  	<form class="layui-form" action="" style="margin-top: 20px;">
+		  <div class="layui-form-item">
+		   		 <label class="layui-form-label">应用名称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="name" required  lay-verify="required" placeholder="请输入应用名称" autocomplete="off" class="layui-input" style="width: 300px;">
+			    </div>
+		  </div>
+		   <div class="layui-form-item">
+		   		 <label class="layui-form-label">访问地址</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="url" required  lay-verify="required" placeholder="请输入访问地址" autocomplete="off" class="layui-input" style="width: 300px;">
+			    </div>
+		  </div>
+		  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="formAdd">立即提交</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			    </div>
+		  </div>
+	    </form>
+ </div>
+
+</div>
+<script src="/lib/layui/layui.all.js"></script>
+<script src="/lib/jquery.min.js"></script>
+<script type="text/javascript">
+//由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+;!function(){
+  var layer = layui.layer
+  ,form = layui.form;
+  
+  $("#add").on("click",function(){
+		//页面层
+		layer.open({
+		  type: 1,
+		  skin: 'layui-layer-rim', //加上边框
+		  area: ['500px', '240px'], //宽高
+		  content: $(".layelAdd").html()
+		});
+	});
+  
+    function del(){
+    	
+    }
+  $(".del").on("click",function(){
+	  var name=$(this).attr("data-name");
+	  layer.confirm('确定要删除该应用？', {
+	    btn: ['确认','取消']
+	  }, function(){
+			 $.ajax({
+		            url: "/delete",
+		            dataType: "json",
+		            type: "post",
+		            data:{name:name},
+		            success: function (data) {
+		                if (data.code == 0) {
+		                	location.reload();
+		                }else{
+		                	layer.msg(data.msg);
+		                }
+		            }
+		        });
+	  }, function(){
+	    
+	  });
+	});
+  
+  //监听提交
+  form.on('submit(formAdd)', function(data){
+	  var name=data.field.name;
+	  var url=data.field.url;
+	  $.ajax({
+          url: "/saveActuator",
+          dataType: "json",
+          type: "post",
+          data:{name:name,url:url},
+          success: function (data) {
+              if (data.code == 0) {
+            	  location.reload();
+              }else{
+              	layer.msg(data.msg);
+              }
+          }
+      });  
+  });
+  
+  $(".monitor").on("click",function(){
+	  var name=$(this).attr("data-name");
+	  window.location.href="/monitor?pid="+name;
+
+  })
+}();
+
+</script>
+</body>
+</html>

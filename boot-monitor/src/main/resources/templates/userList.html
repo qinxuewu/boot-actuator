@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-Equiv="Expires" Content="0" />
+    <title>用户列表</title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
+</head>
+<style>
+ 
+</style>
+<body>
+<div style="padding: 20px;margin-top: 50px;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <i class="layui-icon">&#xe68e;</i>
+                    <span>首页 / 用户列表</span>
+                </div>
+                <div class="layui-card-body">               
+						  <button class="layui-btn layui-btn-sm" id="add"><i class="layui-icon">&#xe654;</i>添加用户 </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- 数据表格 -->
+  <table class="layui-table">
+	  <colgroup>
+	    <col width="150">
+	    <col width="200">
+	    <col>
+	  </colgroup>
+	  <thead>
+		    <tr>
+			      <th>用户名</th>
+			      <th>时间</th>
+			      <th>操作</th>
+		    </tr> 
+	  </thead>
+	  <tbody>
+		    <tr th:each="list:${list}">
+			      <td th:text="${list.name}"></td>
+			      <td th:text="${list.date}"></td>
+			     <td>
+			     	   <button class="layui-btn layui-btn-danger layui-btn-sm del" title="删除" th:attr="data-id=${list.id}">
+							    <i class="layui-icon">&#xe640;</i>
+						</button>		
+			     </td>
+		    </tr>
+		  
+	  </tbody>
+</table>
+
+ <!-- 弹出层 --> 
+  <div class="layelAdd" style="display: none;">
+	  	<form class="layui-form" action="" style="margin-top: 20px;">
+		  <div class="layui-form-item">
+		   		 <label class="layui-form-label">用户名</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="name" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" style="width: 300px;">
+			    </div>
+		  </div>
+		   <div class="layui-form-item">
+		   		<label class="layui-form-label">密码</label>
+			    <div class="layui-input-block">
+			      <input type="password" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input" style="width: 300px;">
+			    </div>
+		  </div>
+		  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="formAdd">立即提交</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			    </div>
+		  </div>
+	    </form>
+ </div>
+</div>
+<script src="/lib/layui/layui.all.js"></script>
+<script type="text/javascript">
+//由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
+;!function(){
+  var layer = layui.layer
+  ,form = layui.form,$=layui.jquery;
+  
+  $("#add").on("click",function(){
+	
+		//页面层
+		layer.open({
+		  type: 1,
+		  skin: 'layui-layer-rim', //加上边框
+		  area: ['500px', '240px'], //宽高
+		  content: $(".layelAdd").html()
+		});
+	});
+  
+ 
+  $(".del").on("click",function(){
+	  var id=$(this).attr("data-id");
+	  layer.confirm('确定要删除该应用？', {
+	    btn: ['确认','取消']
+	  }, function(){
+			 $.ajax({
+		            url: "/delUser",
+		            dataType: "json",
+		            type: "post",
+		            data:{id:id},
+		            success: function (data) {
+		                if (data.code == 0) {
+		                	location.reload();
+		                }else{
+		                	layer.msg(data.msg);
+		                }
+		            }
+		        });
+	  }, function(){
+	    
+	  });
+	});
+  
+  //监听提交
+  form.on('submit(formAdd)', function(data){
+	  var name=data.field.name;
+	  var password=data.field.password;
+	  $.ajax({
+          url: "/saveUser",
+          dataType: "json",
+          type: "post",
+          data:{name:name,password:password},
+          success: function (data) {
+              if (data.code == 0) {
+            	  location.reload();
+              }else{
+              	layer.msg(data.msg);
+              }
+          }
+      });  
+  });
+  
+}();
+
+</script>
+</body>
+</html>
