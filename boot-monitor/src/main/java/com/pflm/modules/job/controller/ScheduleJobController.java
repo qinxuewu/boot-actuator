@@ -2,8 +2,11 @@ package com.pflm.modules.job.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.pflm.common.utils.Res;
+
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.qinxuewu.utils.Res;
 import com.pflm.common.utils.PageUtils;
 import com.pflm.common.utils.Query;
 import com.pflm.modules.job.entity.ScheduleJobEntity;
@@ -33,6 +35,9 @@ public class ScheduleJobController {
 	@Autowired
 	private Scheduler scheduler;
 	
+	@Value("${actuator.type}")
+	private String actuatorTtype;
+	
     @RequestMapping(value = "/index")
     public String localhost(ModelMap model){
         return "schedule/index";
@@ -47,13 +52,11 @@ public class ScheduleJobController {
 	public Res list(@RequestParam Map<String, Object> params) {
 		// 查询列表数据
 		Query query = new Query(params);
-	
+	    System.err.println(params.toString());
 		List<ScheduleJobEntity> jobList = scheduleJobService.queryList(query);
 		int total = scheduleJobService.queryTotal(query);
 		PageUtils pageUtil = new PageUtils(jobList, total, query.getLimit(),query.getPage());
-		System.err.println(jobList.size());
-		System.err.println(pageUtil.toString());
-		return Res.ok().put("page", pageUtil);
+		return Res.ok("success").put("page", pageUtil);
 	}
 	
 	/**
@@ -73,6 +76,9 @@ public class ScheduleJobController {
     @RequestMapping("/save")
     @ResponseBody
     public Res save(@RequestBody ScheduleJobEntity scheduleJob) {
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
         scheduleJobService.save(scheduleJob);
         return Res.ok();
     }
@@ -84,6 +90,9 @@ public class ScheduleJobController {
     @RequestMapping("/update")
     @ResponseBody
     public Res update(@RequestBody ScheduleJobEntity scheduleJob) {
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
         scheduleJobService.updateById(scheduleJob);
         return Res.ok();
     }
@@ -95,6 +104,9 @@ public class ScheduleJobController {
     @RequestMapping("/delete")
     @ResponseBody
     public Res delete(Long jobId) {
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
         scheduleJobService.removeById(jobId);
         return Res.ok();
     }
@@ -106,7 +118,7 @@ public class ScheduleJobController {
     @RequestMapping("/run")
     @ResponseBody
     public Res run(Long jobId){
-      
+        scheduleJobService.run(jobId);
         return Res.ok();
     }
 
@@ -117,6 +129,9 @@ public class ScheduleJobController {
     @RequestMapping("/pause")
     @ResponseBody
     public Res pause(Long jobId) {
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
         scheduleJobService.pause(jobId);
         return Res.ok();
     }
@@ -127,6 +142,9 @@ public class ScheduleJobController {
     @RequestMapping("/resume")
     @ResponseBody
     public Res resume(Long jobId) {
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
         scheduleJobService.resume(jobId);
         return Res.ok();
     }

@@ -1,10 +1,10 @@
 package com.pflm.modules.sys.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.pflm.common.utils.JvmUtils;
+import com.pflm.common.utils.DateUtils;
+import com.pflm.common.utils.HttpUtil;
 import com.pflm.common.utils.Md5;
 import com.pflm.common.utils.Res;
-import com.pflm.common.vo.FreeBean;
 import com.pflm.modules.sys.dao.SysActuatorMapper;
 import com.pflm.modules.sys.dao.SysUserMapper;
 import com.pflm.modules.sys.entity.SysActuatorEntity;
@@ -13,6 +13,7 @@ import com.pflm.modules.sys.entity.SysUserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +42,8 @@ public class ActuatorController {
 	private SysUserMapper sysUserMapper;
 	@Autowired
 	private SysActuatorMapper sysActuatorMapper;
+	@Value("${actuator.type}")
+	private String actuatorTtype;
 	  /**
      * 登录页面
      * @param model
@@ -104,7 +106,7 @@ public class ActuatorController {
 	 */
     @RequestMapping(value = "/index")
     public String index(ModelMap model,HttpServletRequest request){
-       List<JSONObject> list=getList(); 
+    	List<SysActuatorEntity> list=sysActuatorMapper.selectList(null);
     	model.addAttribute("list",list);
     	model.addAttribute("username",request.getSession().getAttribute("username"));
         return "index";
@@ -118,9 +120,16 @@ public class ActuatorController {
      * @throws IOException
      */
     @RequestMapping(value = "/main")
-    public String main(ModelMap model) throws IOException{
-        List<JSONObject> list= getList();
-    	model.addAttribute("list",list);
+    public String main(ModelMap mmap) throws IOException{
+    	List<JSONObject> server=new ArrayList<>();
+    	List<SysActuatorEntity> list=sysActuatorMapper.selectList(null);
+    	for(SysActuatorEntity i:list){
+    		 JSONObject info=JSONObject.parseObject(HttpUtil.URLGet(i.getUrl()+"/actuator/info/systemInfo"));
+    		 info.put("name", i.getName());
+    		 server.add(info);   		
+    	}
+    	 System.out.println(server.toString());
+    	mmap.put("list",server);
         return "main";
     }
     
@@ -133,9 +142,14 @@ public class ActuatorController {
     @ResponseBody
     @RequestMapping("/saveActuator")
     public Res saveActuator(String name,String url){
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
+    	
     	if(StringUtils.isEmpty(name)||StringUtils.isEmpty(url)){
     		return Res.error("名称和应用域名不能为空");
     	}
+    
     	try {
     		SysActuatorEntity query=new SysActuatorEntity();
     		query.setUrl(url);
@@ -165,6 +179,9 @@ public class ActuatorController {
     @ResponseBody
     @RequestMapping("/delete")
 	public Res delete(String name){
+    	if(actuatorTtype.equals("1")){
+    		return Res.error("演示环境不能操作");
+    	}
     	if(StringUtils.isEmpty(name)){
     		return Res.error("删除应用名称不能为空");
     	}
@@ -187,30 +204,7 @@ public class ActuatorController {
         return "monitor";
     }
     
-    /**
-     * 获取监控应用列表
-     * @return
-     */
-    public  List<JSONObject>  getList(){
-    	List<JSONObject> info=new ArrayList<>();
-    	List<SysActuatorEntity> list=sysActuatorMapper.selectList(null);
-    	list.forEach(i->{
-    		JSONObject obj=new JSONObject();
-    		 FreeBean free;
-			try {
-				free = JvmUtils.free(i.getUrl());
-				 obj.put("name",i.getName());
-	    		 obj.put("url",i.getUrl());
-	    		 obj.put("total", free.getTotal());
-	    		 obj.put("used", free.getUsed());
-	    		 obj.put("free", free.getFree());
-	    		 info.add(obj);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	});
-    	 return info;
-    }
+
 
 
 
@@ -237,6 +231,9 @@ public class ActuatorController {
     @RequestMapping("/saveUser")
     public Res saveUser(String name,String password){
     	try {
+    	 	if(actuatorTtype.equals("1")){
+        		return Res.error("演示环境不能操作");
+        	}
     		SysUserEntity u=new SysUserEntity();
     		u.setName(name);
     		int count=sysUserMapper.selectCount(new QueryWrapper(u));
@@ -246,7 +243,7 @@ public class ActuatorController {
     		SysUserEntity user=new SysUserEntity();
     		user.setName(name);
     		user.setPassword(Md5.encode(password));
-    		user.setDate(format(new Date()));
+    		user.setDate(DateUtils.format(new Date(),DateUtils.DATE_TIME_PATTERN));
     		sysUserMapper.insert(user);
     		return Res.ok();
 		} catch (Exception e) {
@@ -256,19 +253,7 @@ public class ActuatorController {
     }
     
 
-    /**
-     * 日期格式化 日期格式为：yyyy-MM-dd
-     * @param date  日期
-     * @param pattern  格式，如：DateUtils.DATE_TIME_PATTERN
-     * @return  返回yyyy-MM-dd格式日期
-     */
-    public static String format(Date date) {
-        if(date != null){
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return df.format(date);
-        }
-        return null;
-    }
+  
     /**
      * 删除
      * @param name
@@ -279,6 +264,9 @@ public class ActuatorController {
     @RequestMapping("/delUser")
      public Res delUser(int id,HttpServletRequest request){
      	try {
+     	 	if(actuatorTtype.equals("1")){
+        		return Res.error("演示环境不能操作");
+        	}
      		sysUserMapper.deleteById(id);
      		return Res.ok();
  		} catch (Exception e) {
@@ -287,6 +275,6 @@ public class ActuatorController {
  		}
      }
      
-     
+
 
 }

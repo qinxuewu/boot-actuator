@@ -1,15 +1,19 @@
 package com.github.qinxuewu.core;
+import com.alibaba.fastjson.JSONObject;
 import com.github.qinxuewu.entity.*;
 import com.github.qinxuewu.jvm.Jstack;
 import com.github.qinxuewu.jvm.Jstat;
+import com.github.qinxuewu.jvm.Server;
 import com.github.qinxuewu.utils.ExecuteCmd;
 import com.github.qinxuewu.utils.Res;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.lang.management.ManagementFactory;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -143,7 +147,57 @@ public class CoreController {
             return  Res.error("RuntimeExec异常");
         }
     }
+    
+    /**
+     * jvm 内存分配信息
+     * @return
+     */
+    @RequestMapping("/memoryInfo")
+    public Res memoryInfo() {
+        //最大内存 M
+        long maxMemory=Runtime.getRuntime().maxMemory()/1024/1024;
+        //已分配内存
+        long totalMemory=Runtime.getRuntime().totalMemory()/1024/1024;
+        //已分配内存中的剩余空间
+        long freeMemory= Runtime.getRuntime().freeMemory()/1024/1024;
+        //最大可用内存
+        long availableMemory=(Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory())/1024/1024;
+        //判断JDK版本
+        String version=System.getProperty("java.version");
+        //判断是32位还是64位
+        String type=System.getProperty("sun.arch.data.model");
 
+        JSONObject info=new JSONObject();
+        info.put("maxMemory",maxMemory);
+        info.put("totalMemory",totalMemory);
+        info.put("freeMemory",freeMemory);
+        info.put("availableMemory",availableMemory);
+        info.put("java.version",version);
+        info.put("sun.arch.data.model",type);
+        return Res.ok().put("memory",info);
+    }
+    
+    
+    
+    
+    /**
+     * 系统物理内存 
+     * @return
+     */
+    @RequestMapping("/systemInfo")
+    public Res systemInfo() {
+		try {
+			 Server server = new Server();
+	         server.copyTo();
+			return Res.ok().put("server", server);
+		} catch (Exception e) {
+			 logger.debug("systemInfo异常：{}",e);
+	         return  Res.error("systemInfo异常");
+		}
+	
+      
+    }
+    
     /**
      * 现在时间
      * @return

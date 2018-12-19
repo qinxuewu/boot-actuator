@@ -38,6 +38,8 @@
         </div>
     </div>
 
+ 
+
    <!-- 栅格 -->
    <div class="layui-row layui-col-space5">
 	    <div class="layui-col-md4" th:each="list:${list}">
@@ -53,11 +55,78 @@
 							  </button>		
 						</div>
 		        	</div>
-		        <div class="layui-card-body">
-			        <p>当前服务器内存监控: 单位(MB)</p>
-			        <p>total：<span th:text="${list.total}">980</span>MB</p>
-			        <p>used：<span th:text="${list.used}">980</span>MB</p> 
-			        <p>free：<span th:text="${list.free}">980</span>MB</p> 
+		        	
+		        <div class="layui-card-body">		       
+			        <p>当前CPU内存监控: 单位(MB)</p>
+			        <p>
+			        	总内存：<span th:text="${list.server.mem.total + 'G'}">0GB</span> 
+			        	<span style="float: right;">JVM总内存：<span th:text="${list.server.jvm.total + 'M'}">0MB</span></span> 
+			        </p>
+			        <p>
+			        	已用内存：<span th:text="${list.server.mem.used + 'G'}">0GB</span>
+			        	<span style="float: right;">JVM已用内存：<span th:text="${list.server.jvm.used + 'M'}">0MB</span></span> 
+			        </p> 
+			        <p>
+			        	剩余内存：<span th:text="${list.server.mem.free + 'G'}">0GB</span>
+			        	<span style="float: right;">JVM剩余内存：<span th:text="${list.server.jvm.free + 'M'}">0MB</span></span> 
+			        </p> 	
+			        <p>
+			        	使用率：<span >[[${list.server.mem.usage}]]%</span>
+			        	<span style="float: right;">JVM使用率：<span>[[${list.server.jvm.usage}]]%</span></span> 
+			        </p> 	
+			        <div class="layui-progress" style="margin-top: 10px;margin-bottom: 10px;">
+			       		 <div class="layui-progress-bar" lay-percent="100%"></div>
+			        </div>      
+			        
+			        <p>Java虚拟机信息</p> 
+			      
+			        	<p>Java名称：<span th:text="${list.server.jvm.name}">Java</span></p>
+			        	<p>Java版本：<span th:text="${list.server.jvm.version}">1.8.0</span></p>
+			        	<p>启动时间：<span th:text="${list.server.jvm.startTime}"></span></p>
+			        	<p>启动时间：<span th:text="${list.server.jvm.runTime}"></span></p>
+			        	<p>安装路径:<span th:text="${list.server.jvm.home}"></span></p>
+			        	<p>项目路径:<span th:text="${list.server.sys.userDir}"></span></p>			   
+		    
+		       		  <div class="layui-progress" style="margin-top: 10px;margin-bottom: 10px;">
+			       		 <div class="layui-progress-bar" lay-percent="100%"></div>
+			        </div>      
+			        <p>服务器信息</p>
+			         			      
+			        <p>服务器名称：<span th:text="${list.server.sys.computerName}"></span></p>
+			        <p>操作系统：<span th:text="${list.server.sys.osName}"></span></p>		 
+			        <p>服务器IP：<span th:text="${list.server.sys.computerIp}"></span></p>	
+			        <p>系统架构：<span th:text="${list.server.sys.osArch}"></span></p>	 
+			        
+			        <div class="layui-progress" style="margin-top: 10px;margin-bottom: 10px;">
+			       		 <div class="layui-progress-bar" lay-percent="100%"></div>
+			        </div>      
+			        <p>磁盘状态</p>
+			         			      
+						<table class="layui-table" lay-size="sm" lay-skin="nob">
+                                        <thead>
+                                            <tr>
+                                                <th>盘符路径</th>
+                                                <th>文件系统</th>
+                                                <th>盘符类型</th>
+                                                <th>总大小</th>
+                                                <th>可用大小</th>
+                                                <th>已用大小</th>
+                                                <th>已用百分比</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="sysFile : ${list.server.sysFiles}">
+                                                <td th:text="${sysFile.dirName}">C:\</td>
+                                                <td th:text="${sysFile.sysTypeName}">NTFS</td>
+                                                <td th:text="${sysFile.typeName}">local</td>
+                                                <td th:text="${sysFile.total}">0GB</td>
+                                                <td th:text="${sysFile.free}">0GB</td>
+                                                <td th:text="${sysFile.used}">0GB</td>
+                                                <td >[[${sysFile.usage}]]%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>   
+		      		  </div>
 		        </div>
 	      </div>
 	    </div>	  
@@ -94,7 +163,7 @@
 //由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
 ;!function(){
   var layer = layui.layer
-  ,form = layui.form;
+  ,form = layui.form,element = layui.element;
   
   $("#add").on("click",function(){
 		//页面层

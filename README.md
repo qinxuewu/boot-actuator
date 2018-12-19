@@ -1,13 +1,13 @@
 # boot-actuator
 
 
-### 演示地址：http://www.qinxuewu.club/login
+### 演示地址：http://www.qinxuewu.club/login  账号密码 admin/admin
 
 
 #### 项目介绍
 - 基于SpringBoot2.0 实现的jvm远程监工图形化工具，可以同时监控多个web应用
-- 该项目是借鉴另个一开源项目 （ JavaMonitor） https://gitee.com/zyzpp/JavaMonitor 演变而来，剔除了一些功能，增加了可远程监控模块，只需要在需要监控的项目集成监控的jar包 并设置可访问的IP（默认为空 则不拦截IP访问） 就可以实现远程监控,和用户管理模块
-
+- 该项目是借鉴另个一开源项目 （ JavaMonitor） https://gitee.com/zyzpp/JavaMonitor 演变而来，剔除了一些功能，增加了可远程监控模块，只需要在需要监控的项目集成监控的jar包 并设置可访问的IP（默认为空 则不拦截IP访问） 就可以实现远程监控,和用户管理模块,动态定时任务
+支付windows服务器和Linux服务监控,Mac还未测试 应该也支持 
 
 #### 项目框架
 - SpringBoot 2.0.3.RELEASE
@@ -102,8 +102,8 @@ nohup java -jar boot-monitor.jar  &
 
 ### 用户管理
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/162918_d51c9088_1478371.png "屏幕截图.png")
-
-
+### 定时任务
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1215/124822_14bd50ee_1478371.png "屏幕截图.png")
 ### 监控参数的含义如下：
 - S0C：s0（from）的大小（KB）
 - S1C：s1（from）的大小（KB）
@@ -131,6 +131,7 @@ nohup java -jar boot-monitor.jar  &
 - Sleeping：休眠的线程数
 - Waiting：等待的线程数
 
+###  QQ群交流：924715723 
 
 
 

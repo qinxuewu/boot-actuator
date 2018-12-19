@@ -91,8 +91,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- jvm 监控jar包 -->
-        <dependency>
+    	 <dependency>
 			<groupId>com.github.qinxuewu</groupId>
 			 <artifactId>actuator-service</artifactId>
 			 <version>1.0</version>
@@ -133,6 +132,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${google.gson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

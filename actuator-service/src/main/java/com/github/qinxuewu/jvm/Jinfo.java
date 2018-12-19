@@ -2,13 +2,10 @@ package com.github.qinxuewu.jvm;
 import com.github.qinxuewu.entity.JinfoEntity;
 import com.github.qinxuewu.utils.ArrayUtil;
 import com.github.qinxuewu.utils.ExecuteCmd;
+
 import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
-/**
- * Create by yster@foxmail.com 2018/11/15 0015 13:54
- */
 public class Jinfo {
 
 
@@ -44,4 +41,5 @@ public class Jinfo {
         String pid = name.split("@")[0];
         return  pid;
     }
+
 }

@@ -9,173 +9,315 @@
     <meta http-Equiv="Expires" Content="0" />
     <title>定时任务列表</title>
     <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
-    
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<script src="/lib/jquery.min.js"></script>
+	<script src="/lib/layui/layui.all.js"></script>
+	<script src="/lib/vue.min.js"></script>
+	<script src="/lib/plugins/jqgrid/grid.locale-cn.js"></script>
+	<script src="/lib/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+	<script src="/lib/common.js"></script>
 </head>
 <body>
-<div style="padding: 20px;margin-top: 50px;">
-    <div class="layui-row layui-col-space15">
-        <div class="layui-col-md12">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    <i class="layui-icon">&#xe68e;</i>
-                    <span>首页 / 定时任务</span>
-                </div>
-                <div class="layui-card-body">               
-						<button class="layui-btn layui-btn-sm" id="add"><i class="layui-icon">&#xe654;</i>添加 </button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="rrapp" v-cloak  style="padding: 20px;margin-top: 50px;">
 
-	<table class="layui-table">
-	  <colgroup>
-	    <col width="150">
-	    <col width="200">
-	    <col>
-	  </colgroup>
-	  <thead>
-	    <tr>
-	      <th>昵称</th>
-	      <th>加入时间</th>
-	      <th>签名</th>
-	    </tr> 
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <td>贤心</td>
-	      <td>2016-11-29</td>
-	      <td>人生就像是一场修行</td>
-	    </tr>
-	    <tr>
-	      <td>许闲心</td>
-	      <td>2016-11-28</td>
-	      <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
-	    </tr>
-	  </tbody>
-	</table>
-<div id="page"></div>
 
- <!-- 弹出层 --> 
-  <div class="layelAdd" style="display: none;">
-	  	<form class="layui-form" action="" style="margin-top: 20px;">
-		  <div class="layui-form-item">
-		   		 <label class="layui-form-label">bean名称</label>
-			    <div class="layui-input-block">
-			      <input type="text" name="beanName" required  lay-verify="required" placeholder="请输入bean名称" autocomplete="off" class="layui-input" style="width: 300px;">
-			    </div>
-		  </div>
-		   <div class="layui-form-item">
-		   		<label class="layui-form-label">方法名称</label>
-			    <div class="layui-input-block">
-			      <input type="text" name="methodName" required  lay-verify="required" placeholder="请输入方法名称" autocomplete="off" class="layui-input" style="width: 300px;">
-			    </div>
-		  </div>
-		   <div class="layui-form-item">
-		   		<label class="layui-form-label">参数</label>
-			    <div class="layui-input-block">
-			      <input type="text" name="params"  placeholder="参数"   class="layui-input" style="width: 300px;">
-			    </div>
-		  </div>
-		   <div class="layui-form-item">
-		   		<label class="layui-form-label">cron表达式</label>
-			    <div class="layui-input-block">
-			      <input type="text" name="cronExpression"  required  lay-verify="required"  placeholder="如   0 0/1 * * * ?"   class="layui-input" style="width: 300px;">
-			    </div>
-		  </div>
-		   <div class="layui-form-item">
-		   		<label class="layui-form-label">备注</label>
-			    <div class="layui-input-block">
-			      <input type="text" name="remark"  placeholder="备注"   class="layui-input" style="width: 300px;">
-			    </div>
-		  </div>
-		  <div class="layui-form-item">
-			    <div class="layui-input-block">
-			      <button class="layui-btn" lay-submit lay-filter="formAdd">立即提交</button>
-			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-			    </div>
-		  </div>
-	    </form>
- </div>
+	<div v-show="showList">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card-header">
+						<i class="layui-icon">&#xe68e;</i>
+						<span>首页 / 用户列表</span>
+					</div>
+					<div class="layui-card-body">
+						<div class="grid-btn" style="height:34px;">
+							<div class="form-group col-sm-2">
+								<input type="text" class="form-control" v-model="q.beanName" @keyup.enter="query" placeholder="bean名称">
+							</div>
+							<a class="btn btn-default" @click="query">查询</a>
+							<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+							<a  class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+							<a  class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+							<a  class="btn btn-primary" @click="pause"><i class="fa fa-pause"></i>&nbsp;暂停</a>
+							<a  class="btn btn-primary" @click="resume"><i class="fa fa-play"></i>&nbsp;恢复</a>
+							<a  class="btn btn-primary" @click="runOnce"><i class="fa fa-arrow-circle-right"></i>&nbsp;立即执行</a>
+							<!--<a  class="btn btn-danger" style="float:right;" href="schedule_log.html">日志列表</a>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+	</div>
+
+	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-2 control-label">bean名称</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.beanName"
+						   placeholder="spring bean名称，如：testTask"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">方法名称</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.methodName" placeholder="方法名称"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">参数</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.params" placeholder="参数"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">cron表达式</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.cronExpression"
+						   placeholder="如：0 0 12 * * ?"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">备注</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="schedule.remark" placeholder="备注"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div>
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
 </div>
-<script src="/lib/layui/layui.all.js"></script>
 <script type="text/javascript">
-//由于模块都一次性加载，因此不用执行 layui.use() 来加载对应模块，直接使用即可：
-;!function(){
-  var layer = layui.layer
-  ,form = layui.form,table = layui.table,$=layui.jquery,laypage = layui.laypage;
-  
+    $(function () {
+        $("#jqGrid").jqGrid({
+            url: '/schedule/list',
+            datatype: "json",
+            colModel: [
+                {label: '任务ID', name: 'jobId', width: 60, key: true},
+                {label: 'bean名称', name: 'beanName', width: 100},
+                {label: '方法名称', name: 'methodName', width: 100},
+                {label: '参数', name: 'params', width: 100},
+                {label: 'cron表达式 ', name: 'cronExpression', width: 100},
+                {label: '备注 ', name: 'remark', width: 100},
+                {
+                    label: '状态', name: 'status', width: 60, formatter: function (value, options, row) {
+                        return value === 0 ?
+                            '<span class="label label-success">正常</span>' :
+                            '<span class="label label-danger">暂停</span>';
+                    }
+                }
+            ],
+            viewrecords: true,
+            height: 385,
+            rowNum: 10,
+            rowList: [10, 30, 50],
+            rownumbers: true,
+            rownumWidth: 25,
+            autowidth: true,
+            multiselect: true,
+            pager: "#jqGridPager",
+            jsonReader: {
+                root: "page.list",
+                page: "page.currPage",
+                total: "page.totalPage",
+                records: "page.totalCount"
+            },
+            prmNames: {
+                page: "page",
+                rows: "limit",
+                order: "order"
+            },
+            gridComplete: function () {
+                //隐藏grid底部滚动条
+                $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+            }
+        });
+    });
 
-  
-  laypage.render({
-	  elem: 'page'
-	  ,count: 70 //数据总数，从服务端得到
-	  ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
-	  ,jump: function(obj, first){
-	    //obj包含了当前分页的所有参数，比如：
-	    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-	    console.log(obj.limit); //得到每页显示的条数
-	    
-	    //首次不执行
-	    if(!first){
-	      //do something
-	    }
-	  }
-	});
-  $("#add").on("click",function(){	
-		//页面层
-		layer.open({
-		  type: 1,
-		  skin: 'layui-layer-rim', //加上边框
-		  area: ['500px', '340px'], //宽高
-		  content: $(".layelAdd").html()
-		});
-	});
-  
- 
-  $(".del").on("click",function(){
-	  var id=$(this).attr("data-id");
-	  layer.confirm('确定要删除？', {
-	    btn: ['确认','取消']
-	  }, function(){
-			 $.ajax({
-		            url: "/delUser",
-		            dataType: "json",
-		            type: "post",
-		            data:{id:id},
-		            success: function (data) {
-		                if (data.code == 0) {
-		                	location.reload();
-		                }else{
-		                	layer.msg(data.msg);
-		                }
-		            }
-		        });
-	  }, function(){
-	    
-	  });
-	});
-  
-  //监听提交
-  form.on('submit(formAdd)', function(data){
-	  var name=data.field.name;
-	  var password=data.field.password;
-	  $.ajax({
-          url: "/saveUser",
-          dataType: "json",
-          type: "post",
-          data:{name:name,password:password},
-          success: function (data) {
-              if (data.code == 0) {
-            	  location.reload();
-              }else{
-              	layer.msg(data.msg);
-              }
-          }
-      });  
-  });
-  
-}();
+    var vm = new Vue({
+        el: '#rrapp',
+        data: {
+            q: {
+                beanName: null
+            },
+            showList: true,
+            title: null,
+            schedule: {}
+        },
+        methods: {
+            query: function () {
+                vm.reload();
+            },
+            add: function () {
+                vm.showList = false;
+                vm.title = "新增";
+                vm.schedule = {};
+            },
+            update: function () {
+                var jobId = getSelectedRow();
+                if (jobId == null) {
+                    return;
+                }
 
+                $.get("/schedule/info/" + jobId, function (r) {
+                    vm.showList = false;
+                    vm.title = "修改";
+                    vm.schedule = r.schedule;
+                });
+            },
+            saveOrUpdate: function () {
+                if (vm.validator()) {
+                    return;
+                }
+
+                var url = vm.schedule.jobId == null ? "/schedule/save" : "/schedule/update";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    contentType: "application/json",
+                    data: JSON.stringify(vm.schedule),
+                    success: function (r) {
+                        if (r.code === 0) {
+                            alert('操作成功', function () {
+                                vm.reload();
+                            });
+                        } else {
+                            alert(r.msg);
+                        }
+                    }
+                });
+            },
+            del: function () {
+                var jobId = getSelectedRow();
+                if (jobId == null) {
+                    return;
+                }
+
+                confirm('确定要删除选中的记录？', function () {
+                    $.ajax({
+                        type: "get",
+                        url:"/schedule/delete",
+                        // contentType: "application/json",
+                        data:{jobId:jobId},
+                        success: function (r) {
+                            if (r.code == 0) {
+                                alert('操作成功', function () {
+                                    vm.reload();
+                                });
+                            } else {
+                                alert(r.msg);
+                            }
+                        }
+                    });
+                });
+            },
+            pause: function () {
+                var jobId = getSelectedRow();
+                if (jobId == null) {
+                    return;
+                }
+
+                confirm('确定要暂停选中的记录？', function () {
+                    $.ajax({
+                        type: "POST",
+                        url:"/schedule/pause",
+                        // contentType: "application/json",
+                        data:{jobId:jobId},
+                        success: function (r) {
+                            if (r.code == 0) {
+                                alert('操作成功', function () {
+                                    vm.reload();
+                                });
+                            } else {
+                                alert(r.msg);
+                            }
+                        }
+                    });
+                });
+            },
+            resume: function () {
+                var jobId = getSelectedRow();
+                if (jobId == null) {
+                    return;
+                }
+
+                confirm('确定要恢复选中的记录？', function () {
+                    $.ajax({
+                        type: "POST",
+                        url:"/schedule/resume",
+                        // contentType: "application/json",
+                        data:{jobId:jobId},
+                        success: function (r) {
+                            if (r.code == 0) {
+                                alert('操作成功', function () {
+                                    vm.reload();
+                                });
+                            } else {
+                                alert(r.msg);
+                            }
+                        }
+                    });
+                });
+            },
+            runOnce: function () {
+                var jobId = getSelectedRow();
+                if (jobId == null) {
+                    return;
+                }
+
+                confirm('确定要立即执行选中的记录？', function () {
+                    $.ajax({
+                        type: "POST",
+                        url:"/schedule/run",
+                        // contentType: "application/json",
+                        data:{jobId:jobId},
+                        success: function (r) {
+                            if (r.code == 0) {
+                                alert('操作成功', function () {
+                                    vm.reload();
+                                });
+                            } else {
+                                alert(r.msg);
+                            }
+                        }
+                    });
+                });
+            },
+            reload: function (event) {
+                vm.showList = true;
+                var page = $("#jqGrid").jqGrid('getGridParam', 'page');
+                $("#jqGrid").jqGrid('setGridParam', {
+                    postData: {'beanName': vm.q.beanName},
+                    page: page
+                }).trigger("reloadGrid");
+            },
+            validator: function () {
+                if (isBlank(vm.schedule.beanName)) {
+                    alert("bean名称不能为空");
+                    return true;
+                }
+
+                if (isBlank(vm.schedule.methodName)) {
+                    alert("方法名称不能为空");
+                    return true;
+                }
+
+                if (isBlank(vm.schedule.cronExpression)) {
+                    alert("cron表达式不能为空");
+                    return true;
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>
