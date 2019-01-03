@@ -1,7 +1,9 @@
 # boot-actuator
 
+[![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-924715723-yellowgreen.svg)](https://jq.qq.com/?_wv=1027&k=5PIRvFq)
+[![码云](https://img.shields.io/badge/Gitee-%E7%A0%81%E4%BA%91-yellow.svg)](https://gitee.com/qinxuewu)
+[![Github](https://img.shields.io/badge/Github-Github-red.svg)](https://github.com/a870439570)
 
-### 演示地址：http://www.qinxuewu.club/login  账号密码 admin/admin
 
 
 #### 项目介绍
@@ -94,7 +96,7 @@ nohup java -jar boot-monitor.jar  &
 
 ### 监控列表主页  增加应用，删除应用
 
-![![输入图片说明](https://images.gitee.com/uploads/images/2018/1212/153102_753284c9_1478371.png "屏幕截图.png")](https://images.gitee.com/uploads/images/2018/1213/162341_854c1ecb_1478371.png "屏幕截图.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1219/145529_67e555da_1478371.png "屏幕截图.png")
 
 ### 监控详情
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/163003_4852ee05_1478371.png "屏幕截图.png")
@@ -131,7 +133,7 @@ nohup java -jar boot-monitor.jar  &
 - Sleeping：休眠的线程数
 - Waiting：等待的线程数
 
-###  QQ群交流：924715723 
+
 
 
 

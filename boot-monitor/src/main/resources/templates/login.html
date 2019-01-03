@@ -42,7 +42,7 @@
 		            url:"/checkLogin",
 		            dataType: "json",
 		            type: "post",
-		            data: {"uname":password,"pwd":password},
+		            data: {"uname":username,"pwd":password},
 		            success: function (data) {
 		                if (data.code == 0) {
 		                	 location.href="/index"
