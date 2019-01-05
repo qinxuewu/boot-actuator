@@ -16,7 +16,8 @@
 1. boot-monitor    监监控图形化工程
 1. Sql文件  /boot-monitor/src/main/resources/db/actuator.sql
 
-### [部署文档](https://a870439570.github.io/work-doc/actuator/)    https://a870439570.github.io/work-doc/actuator/
+### [部署文档](https://a870439570.github.io/work-doc/actuator/)    
+- https://a870439570.github.io/work-doc/actuator/
 
 ### 效果图如下
 
