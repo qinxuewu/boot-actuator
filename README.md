@@ -25,3 +25,5 @@
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/162918_d51c9088_1478371.png "屏幕截图.png")
 ### 定时任务
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1215/124822_14bd50ee_1478371.png "屏幕截图.png")
+## 应用的日志实时监控输出
+![输入图片说明](https://images.gitee.com/uploads/images/2019/0107/144321_fb9f6094_1478371.png "屏幕截图.png")
