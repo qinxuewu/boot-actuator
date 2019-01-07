@@ -1,14 +1,15 @@
 package com.github.qinxuewu.core;
-import com.alibaba.fastjson.JSONObject;
 import com.github.qinxuewu.entity.*;
 import com.github.qinxuewu.jvm.Jstack;
 import com.github.qinxuewu.jvm.Jstat;
 import com.github.qinxuewu.jvm.Server;
 import com.github.qinxuewu.utils.ExecuteCmd;
+import com.github.qinxuewu.utils.LogReaderUtils;
 import com.github.qinxuewu.utils.Res;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,9 @@ public class CoreController {
     private Logger logger = LoggerFactory.getLogger(getClass().getName());
     @Value("${spring.application.name}")
     private String name;
+	@Value("${actuator.log.path}")
+	private String logUrl;	
+	
 
 
     /**
@@ -148,38 +152,19 @@ public class CoreController {
         }
     }
     
-    /**
-     * jvm 内存分配信息
-     * @return
-     */
-    @RequestMapping("/memoryInfo")
-    public Res memoryInfo() {
-        //最大内存 M
-        long maxMemory=Runtime.getRuntime().maxMemory()/1024/1024;
-        //已分配内存
-        long totalMemory=Runtime.getRuntime().totalMemory()/1024/1024;
-        //已分配内存中的剩余空间
-        long freeMemory= Runtime.getRuntime().freeMemory()/1024/1024;
-        //最大可用内存
-        long availableMemory=(Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory())/1024/1024;
-        //判断JDK版本
-        String version=System.getProperty("java.version");
-        //判断是32位还是64位
-        String type=System.getProperty("sun.arch.data.model");
+    @RequestMapping("/logReader")
+    public  Res logred(String url){
+        try{
 
-        JSONObject info=new JSONObject();
-        info.put("maxMemory",maxMemory);
-        info.put("totalMemory",totalMemory);
-        info.put("freeMemory",freeMemory);
-        info.put("availableMemory",availableMemory);
-        info.put("java.version",version);
-        info.put("sun.arch.data.model",type);
-        return Res.ok().put("memory",info);
+        	String msg=LogReaderUtils.poll(logUrl);
+
+            return Res.ok().put("result",msg);
+        }catch (Exception e){
+            logger.debug("RuntimeExec异常：{}",e);
+            return  Res.error("RuntimeExec异常");
+        }
     }
-    
-    
-    
-    
+
     /**
      * 系统物理内存 
      * @return

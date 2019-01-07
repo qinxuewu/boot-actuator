@@ -55,27 +55,20 @@ public class IPUtils {
         return ip;
     }
 	
-	  public static String getHostIp()
-	    {
-	        try
-	        {
-	            return InetAddress.getLocalHost().getHostAddress();
-	        }
-	        catch (UnknownHostException e)
-	        {
-	        }
-	        return "127.0.0.1";
-	    }
+	public static String getHostIp() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return "127.0.0.1";
+	}
 
-	    public static String getHostName()
-	    {
-	        try
-	        {
-	            return InetAddress.getLocalHost().getHostName();
-	        }
-	        catch (UnknownHostException e)
-	        {
-	        }
-	        return "未知";
-	    }
+	public static String getHostName() {
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+		}
+		return "未知";
+	}
+	
 }

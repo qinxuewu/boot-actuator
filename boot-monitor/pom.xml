@@ -91,11 +91,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-    	 <dependency>
-			<groupId>com.github.qinxuewu</groupId>
-			 <artifactId>actuator-service</artifactId>
-			 <version>1.0</version>
-		</dependency>
+
 			<!--常用工具类 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -133,12 +129,14 @@
             <artifactId>gson</artifactId>
             <version>${google.gson.version}</version>
         </dependency>
+
+        
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
+            <groupId>com.github.qinxuewu</groupId>
+            <artifactId>actuator-service</artifactId>
+            <version>1.0</version>
         </dependency>
+        
     </dependencies>
 
     <build>

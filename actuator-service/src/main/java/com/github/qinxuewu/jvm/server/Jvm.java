@@ -1,9 +1,10 @@
 package com.github.qinxuewu.jvm.server;
-
 import java.lang.management.ManagementFactory;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import com.github.qinxuewu.utils.Arith;
-import com.github.qinxuewu.utils.DateUtils;
+
+
 
 /**
  * JVM相关信息
@@ -95,16 +96,15 @@ public class Jvm {
 	 * JDK启动时间
 	 */
 	public String getStartTime() {
-		return DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS,
-				DateUtils.getServerStartDate());
+
+		return format(getServerStartDate(),"yyyy-MM-dd HH:mm:ss");
 	}
 
 	/**
 	 * JDK运行时间
 	 */
 	public String getRunTime() {
-		return DateUtils.getDatePoor(DateUtils.getNowDate(),
-				DateUtils.getServerStartDate());
+		return getDatePoor(new Date(),getServerStartDate());
 	}
 
 	@Override
@@ -112,5 +112,40 @@ public class Jvm {
 		return "Jvm [total=" + total + ", max=" + max + ", free=" + free
 				+ ", version=" + version + ", home=" + home + "]";
 	}
+	public static String format(Date date, String pattern) {
+		if (date != null) {
+			SimpleDateFormat df = new SimpleDateFormat(pattern);
+			return df.format(date);
+		}
+		return null;
+	}
+	
+	/**
+	 * 计算两个时间差
+	 */
+	public static String getDatePoor(Date endDate, Date nowDate) {
+		long nd = 1000 * 24 * 60 * 60;
+		long nh = 1000 * 60 * 60;
+		long nm = 1000 * 60;
+		// long ns = 1000;
+		// 获得两个时间的毫秒时间差异
+		long diff = endDate.getTime() - nowDate.getTime();
+		// 计算差多少天
+		long day = diff / nd;
+		// 计算差多少小时
+		long hour = diff % nd / nh;
+		// 计算差多少分钟
+		long min = diff % nd % nh / nm;
+		// 计算差多少秒//输出结果
+		// long sec = diff % nd % nh % nm / ns;
+		return day + "天" + hour + "小时" + min + "分钟";
+	}
 
+	/**
+	 * 获取服务器启动时间
+	 */
+	public static Date getServerStartDate() {
+		long time = ManagementFactory.getRuntimeMXBean().getStartTime();
+		return new Date(time);
+	}
 }

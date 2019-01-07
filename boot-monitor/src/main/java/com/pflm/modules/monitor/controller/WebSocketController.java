@@ -5,12 +5,15 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.pflm.common.utils.HttpUtil;
 import com.pflm.modules.monitor.entity.ClassLoadEntity;
 import com.pflm.modules.monitor.entity.GcEntity;
 import com.pflm.modules.monitor.entity.ThreadEntity;
 import com.pflm.modules.monitor.service.ClassService;
 import com.pflm.modules.monitor.service.GcService;
 import com.pflm.modules.monitor.service.ThreadService;
+import com.pflm.modules.sys.dao.SysActuatorMapper;
 
 import java.util.List;
 
@@ -25,7 +28,9 @@ public class WebSocketController {
     private ClassService classService;
     @Autowired
     private ThreadService threadService;
-
+	@Autowired
+	private SysActuatorMapper sysActuatorMapper;
+	
     /**
      * gc 内存信息
      * MessageMapping注解和我们之前使用的@RequestMapping类似  前端主动发送消息到后台时的地址
@@ -60,4 +65,22 @@ public class WebSocketController {
         return threadService.findAllByName(name);
     }
 
+
+    /**
+     * 日志
+     * @param name
+     * @return
+     */
+    @MessageMapping("/weblog")
+    @SendTo("/topic/weblog")
+    public String weblog(String url){
+    	 JSONObject info=JSONObject.parseObject(HttpUtil.URLGet(url+"/actuator/info/logReader"));
+    	 if(info.containsKey("result")){
+    		 System.err.println(info.getString("result"));
+    		 return info.getString("result");
+    	 }else{
+    		 return "没有最新日志.......................";
+    	 }
+       
+    }
 }

@@ -1,7 +1,10 @@
 package com.pflm.modules.job.task;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.pflm.common.utils.ByteConvKbUtils;
 import com.pflm.common.utils.HttpUtil;
@@ -99,6 +102,7 @@ public class MonitiorTask {
     * 每日的0:00:00时清空数据
     *
     */
+   @Scheduled(cron="0 0 0 * * ?")
    public void clearAll(){
 	   gcService.clearAll();
 	   threadService.clearAll();

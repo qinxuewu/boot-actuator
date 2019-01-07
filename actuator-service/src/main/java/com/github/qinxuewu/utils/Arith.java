@@ -1,10 +1,11 @@
 package com.github.qinxuewu.utils;
-
 import java.math.BigDecimal;
 
 /**
  * 精确的浮点数运算
-
+ * @author qinxuewu
+ * 2018年12月20日上午9:40:38
+ *
  */
 public class Arith
 {

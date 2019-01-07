@@ -26,22 +26,17 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
      */
     @PostConstruct
     public void init() {
-    	try {
-
-            List<ScheduleJobEntity> scheduleJobList =scheduleJobMapper.selectList(null);
-            for (ScheduleJobEntity scheduleJob : scheduleJobList) {
-                CronTrigger cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
-                //如果不存在，则创建
-                if (cronTrigger == null) {
-                    ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
-                } else {
-                    ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
-                }
+    	scheduleJobMapper.selectList(null);
+        List<ScheduleJobEntity> scheduleJobList =scheduleJobMapper.selectList(null);
+        for (ScheduleJobEntity scheduleJob : scheduleJobList) {
+            CronTrigger cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
+            //如果不存在，则创建
+            if (cronTrigger == null) {
+                ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
+            } else {
+                ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    
+        }
     }
 
 	@Override

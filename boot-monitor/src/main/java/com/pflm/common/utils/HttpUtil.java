@@ -182,7 +182,7 @@ public class HttpUtil {
             int statusCode = client.executeMethod(getMethod);
             if (statusCode == HttpStatus.SC_OK) {
             	InputStream inputStream = getMethod.getResponseBodyAsStream();
-            	BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            	BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
             	StringBuffer result = new StringBuffer();  
             	String str= "";  
             	while((str = br.readLine()) != null){  

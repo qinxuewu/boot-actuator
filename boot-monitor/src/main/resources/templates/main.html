@@ -47,6 +47,9 @@
 	        	<div class="layui-card-header">
 	        	<i class="layui-icon layui-icon-website" style="font-size: 26px;color: #1e9fff;margin-right: 20px;"></i>应用名称：<span th:text="${list.name}">>web1</span>
 		        	<div class="layui-btn-group" style="float: right;">
+		        	 		<button class="layui-btn layui-btn-sm weblog"   title="应用日志" th:attr="data-url=${list.url}">
+    							<i class="layui-icon">&#xe652;</i>
+ 							  </button>		
 							  <button class="layui-btn layui-btn-sm monitor"   title="详情" th:attr="data-name=${list.name}">
     							<i class="layui-icon">&#xe857;</i>
  							  </button>		
@@ -224,7 +227,12 @@
 	  var name=$(this).attr("data-name");
 	  window.location.href="/monitor?pid="+name;
 
-  })
+  });
+    $(".weblog").on("click",function(){
+	  var url=$(this).attr("data-url");
+	  window.location.href="/weblog?url="+url;
+
+  });
 }();
 
 </script>
