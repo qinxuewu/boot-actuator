@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-Equiv="Expires" Content="0" />
+    <title>应用监控</title>
+    <link rel="stylesheet" href="/lib/layui/css/layui.css"/>
+</head>
+<style>
+    .layui-col-md6 {
+        padding: 5px;
+    }
+
+    .layui-card-header {
+        color: #444 !important;
+    }
+
+    .title {
+        padding: 1px 5px;
+    }
+    #log{
+	    width: 100%;
+	    color:#e2e2e2;
+	    background: #0C0C0C;
+	    padding: 10px 10px;
+	    min-height: 1000px;
+    }
+</style>
+<body style="background-color: #F2F2F2">
+<div style="padding: 20px;margin-top: 50px;">
+    <div class="layui-col-md12" style="margin-bottom: 15px">
+        <div class="layui-card">
+            <div class="layui-card-header">
+               <i class="layui-icon" style="color: #009688">&#xe7ae;</i>
+                <span><a href="/main" style="color: #009688">监控列表</a>/ 实时日志</span>
+            </div>
+        </div>
+    </div>
+
+	<div id="log">
+	
+	</div>	
+
+</div>
+<script src="/lib/jquery.min.js"></script>
+<script src="/lib/sockjs.min.js"></script>
+<script src="/lib/stomp.min.js"></script>
+<script src="/lib/layui/layui.all.js"></script>
+<script src="/js/util.js?v=1"></script>
+<script type="text/javascript">
+layui.use('code', function(){
+	layui.code();
+	init();
+});
+	
+function init() {
+
+    var socket = new SockJS('/websocket');
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe('/topic/weblog', function (d) {
+           	$("#log").append("<p>'"+d.body+"'</p>");
+            var scrollHeight = $('#log').prop("scrollHeight");
+            console.log(scrollHeight);
+            $('#log').scrollTop(scrollHeight);
+            
+            setTimeout(function () {
+                stompClient.send("/app/weblog", {}, GetQueryString("url"));
+                
+    
+            }, 500);
+        });
+        stompClient.send("/app/weblog", {}, GetQueryString("url"));
+    });
+    
+
+}
+</script>
+</body>
+</html>
