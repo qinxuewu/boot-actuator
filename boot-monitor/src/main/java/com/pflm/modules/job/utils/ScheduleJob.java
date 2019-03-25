@@ -4,14 +4,12 @@ import com.pflm.common.utils.SpringContextUtils;
 import com.pflm.modules.job.entity.ScheduleJobEntity;
 import com.pflm.modules.job.entity.ScheduleJobLogEntity;
 import com.pflm.modules.job.service.ScheduleJobLogService;
-
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
