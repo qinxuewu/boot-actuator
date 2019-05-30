@@ -7,8 +7,9 @@
 
 ## 项目介绍
 - 基于SpringBoot2.0 实现的jvm远程监工图形化工具，可以同时监控多个web应用
-- 该项目是借鉴另个一开源项目[JavaMonito](https://github.com/yueshutong/JavaMonitor)初始版演变而来，剔除了一些功能，增加了可远程监控模块，只需要在需要监控的项目集成监控的jar包 并设置可访问的IP（默认为空 则不拦截IP访问） 就可以实现远程监控,和用户管理模块,动态定时任务
+- 该项目是借鉴另个一开源项目JavaMonito初始版演变而来，剔除了一些功能，增加了可远程监控模块，只需要在需要监控的项目集成监控的jar包 并设置可访问的IP（默认为空 则不拦截IP访问） 就可以实现远程监控,和用户管理模块,动态定时任务
 支付windows服务器和Linux服务监控,Mac还未测试 应该也支持 
+- 参考项目地址：https://github.com/yueshutong/JavaMonitor
 
 ## 项目框架
 - SpringBoot 2.0.3.RELEASE
